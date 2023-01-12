@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
-    "test": "jest --detectOpenHandles --watch",
+    "test": "jest --detectOpenHandles",
     "dev": "nodemon src/app.ts",
     "build": "rimraf bin && tsc "
   },
@@ -36,6 +36,9 @@
     "twilio": "^3.84.0"
   },
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "testPathIgnorePatterns": [
+      "src/__tests__"
+    ]
   }
 }
