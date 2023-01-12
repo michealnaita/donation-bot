@@ -1,0 +1,23 @@
+version: '3'
+services:
+  rdb:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+  api:
+    build: .
+    depends_on:
+      - rdb
+    ports:
+      - 8080:8080
+    volumes:
+      - ./app/credentials.json:/app/credentials.json
+    environment:
+      PORT: 8080
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:?err}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:?err}
+      DATABASE_HOST: ${DATABASE_HOST:?err}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:?err}
+      ADMIN: ${ADMIN:?err}
+      DIALOGFLOW_PROJECT_ID: ${DIALOGFLOW_PROJECT_ID:?err}

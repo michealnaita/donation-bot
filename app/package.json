@@ -5,7 +5,8 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "jest --detectOpenHandles --watch",
-    "dev": "nodemon src/app.ts"
+    "dev": "nodemon src/app.ts",
+    "build": "rimraf bin && tsc "
   },
   "keywords": [],
   "author": "",
@@ -26,10 +27,12 @@
   },
   "dependencies": {
     "@google-cloud/dialogflow": "^5.4.0",
+    "@googlemaps/google-maps-services-js": "^3.3.26",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "ioredis": "^5.2.4",
     "morgan": "^1.10.0",
+    "rimraf": "^3.0.2",
     "twilio": "^3.84.0"
   },
   "jest": {
