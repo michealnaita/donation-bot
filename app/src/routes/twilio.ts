@@ -35,18 +35,22 @@ route.post(
         user.image = req.body.MediaUrl0;
       } else if (location.lat && location.long) {
         // Check if user has sent location pin
-        user.location = [parseInt(location.lat), parseInt(location.long)];
+        console.log('location in twilio route', location);
+        user.location = [parseFloat(location.lat), parseFloat(location.long)];
         reply = await utils.triggerEvent(sessionId, 'GET_LOCATION');
       } else {
         // process reply based on user text
-        reply = await utils.processReply(sessionId, message);
+        const { text, payload } = await utils.processReply(sessionId, message);
+        reply = text;
+        if (payload) user[payload.key] = payload.value;
       }
 
       // save current user session
       await user.save();
 
-      response.message(reply);
+      if (!user.missing().length) console.log('received all values');
 
+      response.message(reply);
       res.type('text/xml');
       res.send(response.toString());
     } catch (e) {
