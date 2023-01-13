@@ -4,9 +4,10 @@ import redis from '../models/session/client';
 
 const sId = '1234567890';
 const sId2 = '0987654321';
-xdescribe('User Session', () => {
+describe('User Session', () => {
   afterAll(async () => {
     await redis.flushall();
+    await redis.quit();
   });
 
   it('Should successfully store user session in databse', async () => {
