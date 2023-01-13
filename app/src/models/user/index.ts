@@ -1,3 +1,4 @@
+import submitDonation from '../../utils/submitDonation';
 import Session, { sessionType } from '../session/index';
 
 export default class User {
@@ -20,7 +21,19 @@ export default class User {
     }
   }
   cancel() {}
-  submit() {}
+  async submit(): Promise<{
+    success: boolean;
+    err_message: any;
+  }> {
+    const res = await submitDonation({
+      phone: this.sessionId,
+      item: this.item,
+      firstname: this.firstname,
+      image: this.image,
+      location: this.location,
+    });
+    return res;
+  }
   missing(): string[] {
     const missingProps: string[] = [];
     Object.keys(this).forEach((prop) => {
