@@ -14,7 +14,7 @@ export interface ISession {
 }
 
 const Session: ISession = {
-  async load(sessionId: string) {
+  async load(sessionId: string): Promise<sessionType | null> {
     try {
       const exists: number = await redis.exists(sessionId);
       if (exists === 1) {
@@ -22,10 +22,8 @@ const Session: ISession = {
         const state: sessionType = JSON.parse(jsonState);
         return state;
       }
-      await redis.quit();
       return null;
     } catch (error) {
-      await redis.quit();
       console.log('error in session Model', error);
       return null;
     }
@@ -37,10 +35,8 @@ const Session: ISession = {
       if (res === 'OK') {
         return { success: true, err_message: '' };
       }
-      await redis.quit();
       return { success: false, err_message: 'Could not save user session' };
     } catch (e) {
-      await redis.quit();
       return { success: false, err_message: e.message };
     }
   },
