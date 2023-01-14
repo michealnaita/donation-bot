@@ -35,7 +35,7 @@ describe('Submit Donation', () => {
       location: [40.714224, -73.961452],
     };
     const res = await submitDonation({
-      phone: '+256123456789',
+      phone: '256123456789',
       ...userDetails,
     });
     expect(res.success).toBe(true);

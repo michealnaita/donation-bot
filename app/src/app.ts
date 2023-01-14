@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import dialogflowRouter from './routes/dialogflow';
 import twilioRouter from './routes/twilio';
 import morgan from 'morgan';
 import 'dotenv/config';
@@ -13,7 +12,6 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/twilio', twilioRouter);
-app.use('/dialogflow', dialogflowRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('hello new world');

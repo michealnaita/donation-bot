@@ -35,7 +35,6 @@ route.post(
         user.image = req.body.MediaUrl0;
       } else if (location.lat && location.long) {
         // Check if user has sent location pin
-        console.log('location in twilio route', location);
         user.location = [parseFloat(location.lat), parseFloat(location.long)];
         reply = await utils.triggerEvent(sessionId, 'GET_LOCATION');
       } else {
@@ -48,7 +47,7 @@ route.post(
       // save current user session
       await user.save();
 
-      if (!user.missing().length) console.log('received all values');
+      if (!user.missing().length) user.submit();
 
       response.message(reply);
       res.type('text/xml');

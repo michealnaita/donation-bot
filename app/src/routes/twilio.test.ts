@@ -17,6 +17,10 @@ jest.mock('../utils/dialogflow', () => ({
 }));
 const dialogflowMock = dialogflow as unknown as MockProxy<typeof dialogflow>;
 
+jest.mock(
+  '../utils/submitDonation',
+  () => () => Promise.resolve({ sucess: true, err_message: '' })
+);
 describe('api/twilio', () => {
   const WaId = '1234567890';
   const userState: sessionType = {
@@ -41,7 +45,7 @@ describe('api/twilio', () => {
       Body: 'hello',
     };
     const searchParams = pasreFormData<MessageRequest>(reqBody);
-    dialogflowMock.processReply.mockResolvedValue('hello');
+    dialogflowMock.processReply.mockResolvedValue({ text: 'hello' });
     await request(app)
       .post('/twilio/handle-user-message')
       .send(searchParams)
@@ -60,7 +64,32 @@ describe('api/twilio', () => {
     };
     const searchParams = pasreFormData<MessageRequest>(reqBody);
 
-    dialogflowMock.processReply.mockResolvedValue(responseMessage);
+    dialogflowMock.processReply.mockResolvedValue({ text: responseMessage });
+
+    const res = await request(app)
+      .post('/twilio/handle-user-message')
+      .send(searchParams)
+      .set('Accept', 'text/xml');
+    expect(res.text).toMatch(responseMessage);
+    expect(redisMock.get).toHaveBeenCalledWith(reqBody.WaId);
+    expect(dialogflowMock.processReply).toHaveBeenCalledWith(
+      reqBody.WaId,
+      reqBody.Body
+    );
+    expect(dialogflowMock.triggerEvent).not.toHaveBeenCalled();
+  });
+  it('should receive collected data from dialogflow', async () => {
+    const reqBody: MessageRequest = {
+      WaId,
+      NumMedia: '0',
+      Body: 'hello',
+    };
+    const searchParams = pasreFormData<MessageRequest>(reqBody);
+
+    dialogflowMock.processReply.mockResolvedValue({
+      text: responseMessage,
+      payload: { key: 'firstname', value: 'test user' },
+    });
 
     const res = await request(app)
       .post('/twilio/handle-user-message')
